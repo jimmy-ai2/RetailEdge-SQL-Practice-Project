@@ -1,6 +1,5 @@
 -- ==============================================================================
 -- RetailEdge Advanced Analytics: Window Functions & Growth Metrics
--- Database: retailedge
 -- ==============================================================================
 
 USE retailedge;
@@ -10,28 +9,28 @@ USE retailedge;
 -- ------------------------------------------------------------------------------
 
 WITH RankedCategoryOrders AS (
-    SELECT 
+    SELECT
         p.category AS product_category,
         o.order_id,
         o.customer_id,
         ROUND(o.quantity * o.unit_price * (1 - COALESCE(o.discount, 0)), 2) AS total_order_value,
         ROW_NUMBER() OVER (
-            PARTITION BY p.category 
+            PARTITION BY p.category
             ORDER BY (o.quantity * o.unit_price * (1 - COALESCE(o.discount, 0))) DESC
         ) AS category_order_rank
     FROM orders o
-    JOIN products p 
+    JOIN products p
         ON o.product_id = p.product_id
 )
-SELECT 
+SELECT
     product_category,
     order_id,
     customer_id,
     total_order_value,
     category_order_rank
 FROM RankedCategoryOrders
-ORDER BY 
-    product_category ASC, 
+ORDER BY
+    product_category ASC,
     category_order_rank ASC;
 
 
@@ -39,7 +38,7 @@ ORDER BY
 -- Query 2: Customer Spend Leaderboard (Ranked Customer Total Spend)
 -- ------------------------------------------------------------------------------
 
-SELECT 
+SELECT
     customer_id,
     ROUND(SUM(quantity * unit_price * (1 - COALESCE(discount, 0))), 2) AS total_spend,
     RANK() OVER (
@@ -57,7 +56,7 @@ ORDER BY spend_rank ASC;
 -- Query 3: Order Value Trajectory (Comparing Current to Previous Order)
 -- ------------------------------------------------------------------------------
 
-SELECT 
+SELECT
     order_id,
     customer_id,
     order_date,
@@ -68,8 +67,8 @@ SELECT
         ), 2
     ) AS previous_order_value
 FROM orders
-ORDER BY 
-    order_date ASC, 
+ORDER BY
+    order_date ASC,
     order_id ASC;
 
 
@@ -78,7 +77,7 @@ ORDER BY
 -- ------------------------------------------------------------------------------
 
 WITH OrderValues AS (
-    SELECT 
+    SELECT
         order_id,
         customer_id,
         order_date,
@@ -90,7 +89,7 @@ WITH OrderValues AS (
         ) AS previous_order_value
     FROM orders
 )
-SELECT 
+SELECT
     order_id,
     customer_id,
     order_date,
@@ -98,10 +97,10 @@ SELECT
     previous_order_value,
     -- Safely calculate percentage change; returns NULL when previous value is 0 or NULL
     ROUND(
-        ((order_value - previous_order_value) / NULLIF(previous_order_value, 0)) * 100, 
+        ((order_value - previous_order_value) / NULLIF(previous_order_value, 0)) * 100,
         2
     ) AS percentage_change
 FROM OrderValues
-ORDER BY 
-    order_date ASC, 
+ORDER BY
+    order_date ASC,
     order_id ASC;
