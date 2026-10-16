@@ -21,7 +21,7 @@ This project helped me move from writing basic SQL statements to thinking more a
 
 - `schema.sql` – creates the database and populates it with sample retail data
 - `Part_1_queries.sql` – foundational SQL queries for practicing joins, aggregations, and filtering
-- `Part_2_queries.sql` – more advanced analytics using window functions and ranking
+- `Part_2_queries.sql` – advanced analytics using window functions to rank orders and customers, compare consecutive order values, and calculate order-over-order percentage growth
 - `readme.md` – project summary and learning notes
 
 ## Database overview
@@ -79,7 +79,7 @@ This structure helped me practice key relational database concepts, especially j
 2. Connect to your database server.
 3. Run the script in `schema.sql` to create the database and insert the sample data.
 4. Run the queries in `Part_1_queries.sql` to practice core SQL.
-5. Run the queries in `Part_2_queries.sql` to explore more advanced analysis.
+5. Run the queries in `Part_2_queries.sql` to explore ranking, order-value comparisons, and growth analysis.
 
 ## Skills I practiced with this project
 
@@ -93,6 +93,8 @@ This project was useful for learning:
 - aggregate functions such as `SUM`, `AVG`, `COUNT`, and `MAX`
 - `HAVING` to filter grouped results
 - window functions like `ROW_NUMBER()`, `RANK()`, `DENSE_RANK()`, and `LAG()`
+- common table expressions (CTEs) to organize multi-step analytical queries
+- order-over-order percentage growth calculations, including handling missing or zero previous values
 - interpreting business data and making sense of results
 
 ## Questions this dataset helps answer
@@ -104,7 +106,9 @@ Using this project, I was able to practice questions like:
 - Which category had the highest quantity sold?
 - Which customers placed the most orders?
 - Who were the biggest spenders?
-- How do order values compare over time?
+- Which orders have the highest value within each product category?
+- How does each order's value compare with the previous order?
+- What is the percentage change in order value from one order to the next?
 
 ## Example SQL query
 
